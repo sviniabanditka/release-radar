@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\SpotifySyncAll;
 use App\Console\Commands\SyncSpotifyReleases;
 use App\Console\Commands\SyncUserSpotifyFollowingArtists;
+use App\Console\Commands\TelegramNotifyUsers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -18,7 +19,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         SyncUserSpotifyFollowingArtists::class,
         SyncSpotifyReleases::class,
-        SpotifySyncAll::class
+        SpotifySyncAll::class,
+        TelegramNotifyUsers::class
     ];
 
     /**
@@ -30,8 +32,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('spotify:sync_following')->daily()->at('02:00');
-        $schedule->command('spotify:sync_releases')->daily()->at('04:00');
+        $schedule->command('spotify:sync_following')->daily()->at('00:00');
+        $schedule->command('spotify:sync_releases')->daily()->at('02:00');
+        $schedule->command('telegram:notify')->daily()->at('10:00');
     }
 
     /**

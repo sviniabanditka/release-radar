@@ -31,7 +31,7 @@
                             <tr>
                                 <td><img src="{{ asset('assets/images/telegram.png') }}" alt="Telegram" style="max-width: 150px;"></td>
                                 <td>{{ ($user->last_notified) ? \Carbon\Carbon::parse($user->last_notified)->format('d.m.Y H:i') : 'None' }}</td>
-                                <td><a href="#"><img src="{{ asset('assets/images/'. ($user->telegram_chat_id ? 'on' : 'off') .'.png') }}" alt="On" style="max-width: 50px;"></a></td>
+                                <td><a href="{{ route('telegram.toggle.get') }}" target="_blank"><img src="{{ asset('assets/images/'. ($user->telegram_chat_id ? 'on' : 'off') .'.png') }}" alt="On" style="max-width: 50px;"></a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -71,6 +71,11 @@
                 <div class="container-login100-form-btn m-t-17">
                     <a class="login100-form-btn unlinked" href="{{ route('landing.get') }}">Go home</a>
                 </div>
+                @if(Sentinel::check() && Sentinel::inRole('admin'))
+                    <div class="container-login100-form-btn m-t-17">
+                        <a class="login100-form-btn unlinked" href="{{ route('telegram.webhook.get') }}">Set Telegram Webhook</a>
+                    </div>
+                @endif
                 <div class="container-login100-form-btn m-t-17">
                     <a class="login100-form-btn unlinked" href="{{ route('auth.logout.get') }}">Logout</a>
                 </div>

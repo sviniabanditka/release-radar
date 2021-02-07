@@ -50,6 +50,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('artist/{id}', 'SpotifyController@getArtistReleases')->name('artist_releases.get');
             Route::get('spotify/toggle', 'SpotifyController@getToggleSpotifyStatus')->name('spotify.toggle.get');
             Route::get('spotify/callback', 'SpotifyController@getSpotifyRedirectUrlCallback')->name('spotify.callback.get');
+
+            Route::get('bot/telegram/toggle', 'TelegramController@getToggleTelegramStatus')->name('telegram.toggle.get');
+            Route::get('bot/telegram/webhook', 'TelegramController@setWebhook')->name('telegram.webhook.get');
         });
 
         //ADMIN
@@ -59,4 +62,5 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
     });
 });
 
+Route::any('dashboard/bot/telegram/callback', 'App\Http\Controllers\TelegramController@getUpdates')->name('telegram.callback.any');
 Route::get('test', function() {return view('auth.forgot_success');});
