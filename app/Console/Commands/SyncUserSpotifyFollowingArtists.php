@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\FetchUserSpotifyFollowingList;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class SyncUserSpotifyFollowingArtists extends Command
 {
@@ -39,10 +40,12 @@ class SyncUserSpotifyFollowingArtists extends Command
      */
     public function handle()
     {
+        Log::warning('START_SYNC_ARTISTS_COMMAND');
         $users = User::query()->whereNotNull(['spotify_access_token', 'spotify_refresh_token'])->get();
         foreach ($users as $user) {
             FetchUserSpotifyFollowingList::dispatch($user);
         }
+        Log::warning('FINISH_SYNC_ARTISTS_COMMAND');
         return 0;
     }
 }

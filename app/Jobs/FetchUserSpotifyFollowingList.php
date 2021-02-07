@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
 use SpotifyWebAPI\SpotifyWebAPIException;
@@ -39,6 +40,7 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
      */
     public function handle()
     {
+        Log::warning('START_FETCH_ARTISTS_LIST_BY_USER', ['user' => $this->user]);
         $session = new Session(env('SPOTIFY_CLIENT_ID'), env('SPOTIFY_CLIENT_SECRET'));
         $session->refreshAccessToken($this->user->spotify_refresh_token);
         $api = new SpotifyWebAPI(['auto_refresh' => true], $session);
@@ -81,6 +83,8 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
             if (!empty($ids)) {
                 DB::table('user_spotify_artists')->where('user_id', $this->user->id)->whereNotIn('artist_id', $ids)->delete();
             }
+
+            Log::warning('FINISH_FETCH_ARTISTS_LIST_BY_USER', ['user' => $this->user, 'artists_ids' => $ids]);
         } catch (SpotifyWebAPIException $e) {
             if ($e->getCode() == 429) { // 429 is Too Many Requests
                 $lastResponse = $api->getRequest()->getLastResponse();
