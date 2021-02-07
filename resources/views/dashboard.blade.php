@@ -63,7 +63,7 @@
                     </div>
                 </form>
                 <br><hr><br>
-                @if($user->spotify_artists)
+                @if(!empty($user->spotify_artists) && count($user->spotify_artists))
                     <div class="container-login100-form-btn m-t-17">
                         <a class="login100-form-btn unlinked" href="{{ route('following_list.get') }}">Artists</a>
                     </div>

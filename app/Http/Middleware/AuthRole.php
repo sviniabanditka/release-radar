@@ -21,7 +21,7 @@ class AuthRole
         if (Sentinel::check() && (Sentinel::inRole($role) || Sentinel::inRole('admin'))) {
             return $next($request);
         } else {
-            return redirect(route('login.get'));
+            return redirect(route('auth.login.get'));
         }
     }
 }
