@@ -33,6 +33,7 @@ class StartCommand extends Command
         $message = $update->getMessage();
         $chat = $update->getChat();
         $code = str_replace('/start', '', $message->text);
+        Log::warning('TELEGRAM_START_COMMAND', ['chat_id' => $chat->id, 'code' => $code, 'text' => $message->text]);
         if ($code && $code = trim($code)) {
             $user = User::query()->whereNull('telegram_chat_id')->where('telegram_temp_code', $code)->first();
             if ($user) {
