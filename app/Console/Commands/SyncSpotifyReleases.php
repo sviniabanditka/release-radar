@@ -47,9 +47,11 @@ class SyncSpotifyReleases extends Command
      */
     public function handle()
     {
+        Log::warning('START_SYNC_RELEASES_COMMAND');
         $users = User::query()->whereNotNull(['spotify_access_token', 'spotify_refresh_token'])->get();
         $artists = [];
         $artists_by_user = [];
+        $releases = [];
         foreach ($users as $user) {
             foreach ($user->spotify_artists()->where('is_active', 1)->get() as $artist) {
                 if (!in_array($artist->spotify_id, $artists)) {
@@ -58,6 +60,7 @@ class SyncSpotifyReleases extends Command
                 }
             }
         }
+        Log::warning('SYNC_RELEASES_COMMAND_ARTISTS', $artists);
         if (!empty($artists) && !empty($artists_by_user)) {
             foreach ($artists_by_user as $key => $_artists) {
                 $user = Sentinel::findById($key);
@@ -82,6 +85,7 @@ class SyncSpotifyReleases extends Command
                                 $options['offset'] = 0;
                                 $albums = $api->getArtistAlbums($artist_id, $options);
                                 if (!empty($albums->items)) {
+                                    Log::warning('SYNC_RELEASES_COMMAND_USER_RELEASES', ['user_id' => $user->id, 'artist_id' => $artist->id, 'artist_name' => $artist->name, 'releases' => $albums->items]);
                                     foreach ($albums->items as $item) {
                                         if (!empty($item->id) && !empty($item->uri) && !empty($item->release_date)) {
                                             switch ($item->release_date_precision) {
@@ -107,16 +111,19 @@ class SyncSpotifyReleases extends Command
                                                 'artist_id' => $artist->id,
                                                 'last_updated' => Carbon::now(),
                                             ]);
+                                            $releases[] = $item->id;
                                         }
                                     }
                                 }
                             }
                         }
+                        Log::warning('FINISH_SYNC_RELEASES_COMMAND', ['users'=> $users, 'artists' => $artists, 'releases' => $releases]);
                     } catch (SpotifyWebAPIException $e) {
                         Log::warning('SPOTIFY_EXCEPTION', ['message' => $e->getMessage(), 'code' => $e->getCode(), 'trace' => $e->getTrace()]);
                         if ($e->getCode() == 429) { // 429 is Too Many Requests
                             $lastResponse = $api->getRequest()->getLastResponse();
                             $retryAfter = $lastResponse['headers']['retry-after']; // Number of seconds to wait before sending another request
+                            Log::warning('SYNC_RELEASES_COMMAND_TOO_MANY_REQUESTS',['retryAfter' => $retryAfter]);
                             $this->output->warning('429 Too Many Requests. Retrying after '.($retryAfter+20).' seconds');
                             sleep($retryAfter+20);
                             Artisan::call('spotify:sync_releases');
