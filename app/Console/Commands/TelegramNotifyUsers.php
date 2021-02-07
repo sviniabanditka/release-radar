@@ -65,6 +65,8 @@ class TelegramNotifyUsers extends Command
                     ]);
                 }
             }
+            $user->last_notified = Carbon::now();
+            $user->save();
         }
         return 0;
     }
