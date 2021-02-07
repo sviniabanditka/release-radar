@@ -84,6 +84,18 @@ class SyncSpotifyReleases extends Command
                                 if (!empty($albums->items)) {
                                     foreach ($albums->items as $item) {
                                         if (!empty($item->id) && !empty($item->uri) && !empty($item->release_date)) {
+                                            switch ($item->release_date_precision) {
+                                                case 'year':
+                                                    $release_date = Carbon::parse($item->release_date.'-01-01');
+                                                    break;
+                                                case 'month':
+                                                    $release_date = Carbon::parse($item->release_date.'-01');
+                                                    break;
+                                                default:
+                                                    $release_date = Carbon::parse($item->release_date);
+                                                    break;
+
+                                            }
                                             SpotifyRelease::query()->updateOrCreate([
                                                 'spotify_id' => $item->id,
                                                 'spotify_uri' => $item->uri,
@@ -91,7 +103,7 @@ class SyncSpotifyReleases extends Command
                                                 'name' => $item->name,
                                                 'spotify_url' => $item->external_urls->spotify ?? '',
                                                 'spotify_data' => $item,
-                                                'release_date' => Carbon::parse($item->release_date),
+                                                'release_date' => $release_date,
                                                 'artist_id' => $artist->id,
                                                 'last_updated' => Carbon::now(),
                                             ]);
