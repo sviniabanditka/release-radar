@@ -49,7 +49,7 @@ class TelegramNotifyUsers extends Command
             $artist_ids = DB::table('user_spotify_artists')->where('user_id', $user->id)->where('is_active', 1)->pluck('artist_id')->toArray();
             $releases = SpotifyRelease::query()->whereIn('artist_id', $artist_ids)->where('release_date', '>=', $date)->orderBy('artist_id')->get();
             if (!empty($releases) && count($releases) > 0) {
-                $text = 'Your new tomorrow releases:'.PHP_EOL.PHP_EOL;
+                $text = 'Your new yesterday releases:'.PHP_EOL.PHP_EOL;
                 $tmp = [];
                 foreach ($releases as $release) {
                     if ($artist = SpotifyArtist::query()->find($release->artist_id)) {
