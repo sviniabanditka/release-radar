@@ -13,7 +13,7 @@
             @if(Sentinel::check())
                 <a href="{{ route('dashboard.get') }}">Dashboard</a>
                 @if(!empty(Sentinel::getUser()->spotify_access_token))
-                    <a href="#">Following artists</a>
+                    <a href="{{ route('following_list.get') }}">Artists</a>
                 @endif
                 <a href="{{ route('auth.logout.get') }}">Logout</a>
             @else

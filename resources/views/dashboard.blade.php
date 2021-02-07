@@ -19,13 +19,19 @@
                         <tbody>
                             <tr>
                                 <td><img src="{{ asset('assets/images/spotify.png') }}" alt="Spotify" style="max-width: 150px;"></td>
-                                <td>None</td>
-                                <td><a href="#"><img src="{{ asset('assets/images/off.png') }}" alt="Off" style="max-width: 50px;"></a></td>
+                                <td>
+                                    @if($last_release = \App\Models\SpotifyRelease::query()->whereNotNull('last_updated')->orderByDesc('release_date')->first())
+                                        {{  \Carbon\Carbon::parse($last_release->last_updated)->format('d.m.Y H:i') }}
+                                    @else
+                                        None
+                                    @endif
+                                </td>
+                                <td><a href="{{ route('spotify.toggle.get') }}"><img src="{{ asset('assets/images/'. ($user->spotify_access_token ? 'on' : 'off') .'.png') }}" alt="Off" style="max-width: 50px;"></a></td>
                             </tr>
                             <tr>
                                 <td><img src="{{ asset('assets/images/telegram.png') }}" alt="Telegram" style="max-width: 150px;"></td>
-                                <td>{{ \Carbon\Carbon::now()->format('d.m.Y H:i') }}</td>
-                                <td><a href="#"><img src="{{ asset('assets/images/on.png') }}" alt="On" style="max-width: 50px;"></a></td>
+                                <td>{{ ($user->last_notified) ? \Carbon\Carbon::parse($user->last_notified)->format('d.m.Y H:i') : 'None' }}</td>
+                                <td><a href="#"><img src="{{ asset('assets/images/'. ($user->telegram_chat_id ? 'on' : 'off') .'.png') }}" alt="On" style="max-width: 50px;"></a></td>
                             </tr>
                         </tbody>
                     </table>
@@ -59,7 +65,7 @@
                 <br><hr><br>
                 @if($user->spotify_artists)
                     <div class="container-login100-form-btn m-t-17">
-                        <a class="login100-form-btn unlinked" href="{{ route('landing.get') }}">Following Artists</a>
+                        <a class="login100-form-btn unlinked" href="{{ route('following_list.get') }}">Artists</a>
                     </div>
                 @endif
                 <div class="container-login100-form-btn m-t-17">
