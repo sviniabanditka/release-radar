@@ -30,7 +30,7 @@ class TelegramController extends Controller
 
     public function setWebhook()
     {
-        $response = Telegram::setWebhook(['url' => 'https://24a19d60775f.ngrok.io/dashboard/bot/telegram/callback']);
+        $response = Telegram::setWebhook(['url' => env('TELEGRAM_BOT_WEBHOOK')]);
         if ($response) {
             toastr('Webhook set successfully.');
         } else {
