@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class TelegramNotifyUsers extends Command
@@ -58,6 +59,7 @@ class TelegramNotifyUsers extends Command
                     }
                 }
                 if (!empty($tmp) && count($tmp) > 0) {
+                    Log::warning('NOTIFY_TELEGRAM_USER', ['user_id' => $user->id, 'user_email' => $user->email, 'releases' => $tmp]);
                     Telegram::sendMessage([
                         'chat_id' => $user->telegram_chat_id,
                         'text' => $text,

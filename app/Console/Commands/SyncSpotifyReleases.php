@@ -74,11 +74,11 @@ class SyncSpotifyReleases extends Command
                             $artist = SpotifyArtist::query()->where('spotify_id', $artist_id)->first();
                             //if last artist release sync time < now more than 15 hours, skip this artist
                             $skip = false;
-                            /*if ($artist && $exists = SpotifyRelease::query()->where('artist_id', $artist->id)->orderByDesc('release_date')->first()) {
+                            if ($artist && $exists = SpotifyRelease::query()->where('artist_id', $artist->id)->orderByDesc('release_date')->first()) {
                                 if (Carbon::now()->diffInHours(Carbon::parse($exists->last_updated)) < 15) {
                                     $skip = true;
                                 }
-                            }*/
+                            }
 
                             if ($artist && !$skip) {
                                 $options['limit'] = 50;
