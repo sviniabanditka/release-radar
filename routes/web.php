@@ -48,6 +48,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('/', 'HomeController@showDashboardPage')->name('dashboard.get');
             Route::get('artists', 'SpotifyController@getFollowingList')->name('following_list.get');
             Route::get('artist/{id}', 'SpotifyController@getArtistReleases')->name('artist_releases.get');
+            Route::get('releases', 'SpotifyController@getLatestReleases')->name('latest_releases.get');
             Route::get('spotify/toggle', 'SpotifyController@getToggleSpotifyStatus')->name('spotify.toggle.get');
             Route::get('spotify/callback', 'SpotifyController@getSpotifyRedirectUrlCallback')->name('spotify.callback.get');
 

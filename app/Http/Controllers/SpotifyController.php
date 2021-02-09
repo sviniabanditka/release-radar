@@ -84,4 +84,19 @@ class SpotifyController extends Controller
             return view('artist_releases', compact('user', 'artist', 'releases'));
         }
     }
+
+    public function getLatestReleases()
+    {
+        $user = Sentinel::getUser();
+        if ($user) {
+            $releases = collect();
+            foreach ($user->spotify_artists as $artist) {
+                foreach ($artist->releases as $release) {
+                    $releases->push($release);
+                }
+            }
+            $releases = $releases->sortByDesc('release_date')->take(50);
+            return view('latest_releases', compact('user', 'releases'));
+        }
+    }
 }
