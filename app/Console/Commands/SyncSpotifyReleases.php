@@ -76,6 +76,7 @@ class SyncSpotifyReleases extends Command
                             $skip = false;
                             if ($artist && $exists = SpotifyRelease::query()->where('artist_id', $artist->id)->orderByDesc('release_date')->first()) {
                                 if (Carbon::now()->diffInHours(Carbon::parse($exists->last_updated)) < 15) {
+                                    Log::warning('SKIP_ARTIST_RELEASES', ['user_email' => $user->email, 'artist_id' => $artist->id, 'last_release_updated' => $exists->last_updated]);
                                     $skip = true;
                                 }
                             }
