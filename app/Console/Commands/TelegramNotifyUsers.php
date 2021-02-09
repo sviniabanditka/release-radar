@@ -50,22 +50,21 @@ class TelegramNotifyUsers extends Command
             $artist_ids = DB::table('user_spotify_artists')->where('user_id', $user->id)->where('is_active', 1)->pluck('artist_id')->toArray();
             $releases = SpotifyRelease::query()->whereIn('artist_id', $artist_ids)->where('release_date', '>=', $date)->orderBy('artist_id')->get();
             if (!empty($releases) && count($releases) > 0) {
-                $text = 'Your new yesterday releases:'.PHP_EOL.PHP_EOL;
-                $tmp = [];
-                foreach ($releases as $release) {
-                    if ($artist = SpotifyArtist::query()->find($release->artist_id)) {
-                        $text .= '<a href="' . $artist->spotify_url . '">' . $artist->name . '</a> - <a href="' . $release->spotify_url . '">' . $release->name . '</a>' . PHP_EOL . PHP_EOL;
-                        $tmp[] = $release->id;
+                $chunked_releases = $releases->chunk(6);
+                foreach ($chunked_releases as $chunk) {
+                    if (!empty($chunk) && count($chunk) > 0) {
+                        $text = 'Your new yesterday releases:'.PHP_EOL.PHP_EOL;
+                        foreach ($chunk as $release) {
+                            $text .= '<a href="' . $release->artist->spotify_url . '">' . $release->artist->name . '</a> - <a href="' . $release->spotify_url . '">' . $release->name . '</a>' . PHP_EOL . PHP_EOL;
+                        }
+                        Telegram::sendMessage([
+                            'chat_id' => $user->telegram_chat_id,
+                            'text' => $text,
+                            'parse_mode' => 'HTML',
+                        ]);
                     }
                 }
-                if (!empty($tmp) && count($tmp) > 0) {
-                    Log::warning('NOTIFY_TELEGRAM_USER', ['user_id' => $user->id, 'user_email' => $user->email, 'releases' => $tmp]);
-                    Telegram::sendMessage([
-                        'chat_id' => $user->telegram_chat_id,
-                        'text' => $text,
-                        'parse_mode' => 'HTML',
-                    ]);
-                }
+                Log::warning('NOTIFY_TELEGRAM_USER', ['user_email' => $user->email, 'releases' => $releases->pluck('spotify_id')->toArray()]);
             }
             $user->last_notified = Carbon::now();
             $user->save();
