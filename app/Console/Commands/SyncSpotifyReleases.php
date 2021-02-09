@@ -74,12 +74,12 @@ class SyncSpotifyReleases extends Command
                             $artist = SpotifyArtist::query()->where('spotify_id', $artist_id)->first();
                             //if last artist release sync time < now more than 15 hours, skip this artist
                             $skip = false;
-                            if ($artist && $exists = SpotifyRelease::query()->where('artist_id', $artist->id)->orderByDesc('release_date')->first()) {
+                            /*if ($artist && $exists = SpotifyRelease::query()->where('artist_id', $artist->id)->orderByDesc('release_date')->first()) {
                                 if (Carbon::now()->diffInHours(Carbon::parse($exists->last_updated)) < 15) {
                                     Log::warning('SKIP_ARTIST_RELEASES', ['user_email' => $user->email, 'artist_id' => $artist->id, 'last_release_updated' => $exists->last_updated]);
                                     $skip = true;
                                 }
-                            }
+                            }*/
 
                             if ($artist && !$skip) {
                                 $options['limit'] = 50;
@@ -118,7 +118,7 @@ class SyncSpotifyReleases extends Command
                                 }
                             }
                         }
-                        Log::warning('FINISH_SYNC_RELEASES_COMMAND', ['users'=> $users, 'artists' => $artists, 'releases' => $releases]);
+                        Log::warning('FINISH_SYNC_RELEASES_COMMAND', ['users' => $users->pluck('email', 'id'), 'artists' => $artists, 'releases' => $releases]);
                     } catch (SpotifyWebAPIException $e) {
                         Log::warning('SPOTIFY_EXCEPTION', ['message' => $e->getMessage(), 'code' => $e->getCode(), 'trace' => $e->getTrace()]);
                         if ($e->getCode() == 429) { // 429 is Too Many Requests

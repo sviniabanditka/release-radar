@@ -33,8 +33,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('spotify:sync_following')->daily()->at('00:00');
-        $schedule->command('spotify:sync_releases')->daily()->at('02:00');
-        $schedule->command('telegram:notify')->daily()->at('10:00');
+        $schedule->command('spotify:sync_releases')->daily()->at('01:00');
+        $schedule->command('telegram:notify')->daily()->at('12:00');
     }
 
     /**
