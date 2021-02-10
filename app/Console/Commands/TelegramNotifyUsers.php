@@ -46,14 +46,14 @@ class TelegramNotifyUsers extends Command
     {
         $users = User::query()->whereNotNull(['spotify_access_token', 'spotify_refresh_token', 'telegram_chat_id'])->get();
         foreach ($users as $user) {
-            $artist_ids = DB::table('user_spotify_artists')->where('user_id', $user->id)->where('is_active', 1)->pluck('artist_id')->toArray();
+            $user_artists_ids = DB::table('user_spotify_artists')->where('user_id', $user->id)->where('is_active', 1)->get();
             $releases = SpotifyRelease::query()
-                ->whereIn('artist_id', $artist_ids)
+                ->whereIn('artist_id', $user_artists_ids->pluck('artist_id')->toArray())
                 ->whereBetween('release_date', [Carbon::yesterday(), Carbon::today()->subMinutes(1)])
                 ->orderBy('artist_id')
                 ->get();
             if (!empty($releases) && count($releases) > 0) {
-                $chunked_releases = $releases->chunk(6);
+                $chunked_releases = $releases->chunk(10);
                 foreach ($chunked_releases as $chunk) {
                     if (!empty($chunk) && count($chunk) > 0) {
                         $text = 'Your new yesterday releases:'.PHP_EOL.PHP_EOL;
