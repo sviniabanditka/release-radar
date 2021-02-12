@@ -51,7 +51,35 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'days' => 7,
+        ],
+
+        'spotify_artists' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/spotify/artists.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 7,
+        ],
+
+        'spotify_releases' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/spotify/releases.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 7,
+        ],
+
+        'telegram_notifications' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/telegram/notifications.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 7,
+        ],
+
+        'telegram_bot' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/telegram/bot.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 7,
         ],
 
         'slack' => [

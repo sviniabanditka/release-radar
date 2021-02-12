@@ -6,7 +6,6 @@ use App\Jobs\FetchUserSpotifyFollowingList;
 use App\Models\SpotifyArtist;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
 
@@ -48,7 +47,6 @@ class SpotifyController extends Controller
     public function getSpotifyRedirectUrlCallback(Request $request)
     {
         $user = Sentinel::getUser();
-        Log::warning('CALLBACK_REQUEST', $request->all());
         if($user && !empty($request->get('code'))) {
             $this->session->requestAccessToken($request->get('code'));
             $accessToken = $this->session->getAccessToken();
@@ -56,7 +54,6 @@ class SpotifyController extends Controller
             $api = new SpotifyWebAPI();
             $api->setAccessToken($accessToken);
             $me = $api->me();
-            Log::warning('SPOTIFY_ME_RESPONSE', [$me]);
             if ($accessToken && $refreshToken && $me) {
                 Sentinel::update($user, ['spotify_access_token' => $accessToken, 'spotify_refresh_token' => $refreshToken, 'spotify_data' => $me]);
                 toastr('Spotify successfully linked');

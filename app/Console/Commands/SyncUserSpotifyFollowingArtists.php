@@ -23,6 +23,8 @@ class SyncUserSpotifyFollowingArtists extends Command
      */
     protected $description = 'Sync users Spotify Following Artists lists';
 
+    protected $log;
+
     /**
      * Create a new command instance.
      *
@@ -31,6 +33,7 @@ class SyncUserSpotifyFollowingArtists extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->log = Log::channel('spotify_artists');
     }
 
     /**
@@ -40,12 +43,12 @@ class SyncUserSpotifyFollowingArtists extends Command
      */
     public function handle()
     {
-        Log::warning('START_SYNC_ARTISTS_COMMAND');
+        $this->log->info('START_SYNC_ARTISTS_COMMAND');
         $users = User::query()->whereNotNull(['spotify_access_token', 'spotify_refresh_token'])->get();
         foreach ($users as $user) {
             FetchUserSpotifyFollowingList::dispatch($user);
         }
-        Log::warning('FINISH_SYNC_ARTISTS_COMMAND');
+        $this->log->info('FINISH_SYNC_ARTISTS_COMMAND');
         return 0;
     }
 }

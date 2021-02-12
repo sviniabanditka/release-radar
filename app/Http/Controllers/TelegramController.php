@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
@@ -41,8 +39,7 @@ class TelegramController extends Controller
 
     public function getUpdates()
     {
-        Log::warning('TEST__QQ');
-        $update = Telegram::commandsHandler(true);
+        Telegram::commandsHandler(true);
         return 'ok';
     }
 }

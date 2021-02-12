@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\SpotifyArtist;
 use App\Models\SpotifyRelease;
 use App\Models\User;
 use Carbon\Carbon;
@@ -27,6 +26,8 @@ class TelegramNotifyUsers extends Command
      */
     protected $description = 'Command description';
 
+    protected $log;
+
     /**
      * Create a new command instance.
      *
@@ -35,6 +36,7 @@ class TelegramNotifyUsers extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->log = Log::channel('telegram_notifications');
     }
 
     /**
@@ -67,7 +69,7 @@ class TelegramNotifyUsers extends Command
                         ]);
                     }
                 }
-                Log::warning('NOTIFY_TELEGRAM_USER', ['user_email' => $user->email, 'releases' => $releases->pluck('spotify_id')->toArray()]);
+                $this->log->info('NOTIFY_TELEGRAM_USER', ['user_email' => $user->email, 'releases' => $releases->pluck('spotify_id')->toArray()]);
             }
             $user->last_notified = Carbon::now();
             $user->save();
