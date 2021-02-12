@@ -7,81 +7,63 @@
         <div class="container-login100">
             <div class="wrap-login100 p-t-50 p-b-90">
                 <div class="title m-b-md">Dashboard</div>
-                <div class="flex-sb-m w-full p-t-3 p-b-24" style="text-align: center;">
-                    <table style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Service</th>
-                                <th>Last Update</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><img src="{{ asset('assets/images/spotify.png') }}" alt="Spotify" style="max-width: 150px;"></td>
-                                <td>
-                                    @if($last_release = \App\Models\SpotifyRelease::query()->whereNotNull('last_updated')->orderByDesc('release_date')->first())
-                                        {{  \Carbon\Carbon::parse($last_release->last_updated)->format('d.m.Y H:i') }}
-                                    @else
-                                        None
-                                    @endif
-                                </td>
-                                <td><a href="{{ route('spotify.toggle.get') }}"><img src="{{ asset('assets/images/'. ($user->spotify_access_token ? 'on' : 'off') .'.png') }}" alt="Off" style="max-width: 50px;"></a></td>
-                            </tr>
-                            <tr>
-                                <td><img src="{{ asset('assets/images/telegram.png') }}" alt="Telegram" style="max-width: 150px;"></td>
-                                <td>{{ ($user->last_notified) ? \Carbon\Carbon::parse($user->last_notified)->format('d.m.Y H:i') : 'None' }}</td>
-                                <td><a href="{{ route('telegram.toggle.get') }}" target="_blank"><img src="{{ asset('assets/images/'. ($user->telegram_chat_id ? 'on' : 'off') .'.png') }}" alt="On" style="max-width: 50px;"></a></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div>
+                    <ul class="nav nav-tabs nav-justified">
+                        <li class="nav-item">
+                            <a href="#home" class="nav-link active" data-toggle="tab"><i class="las la-home la-3x text-black"></i></a>
+                        </li>
+                        @if(!empty($user->spotify_artists) && count($user->spotify_artists))
+                            <li class="nav-item">
+                                <a href="#spotify" class="nav-link" data-toggle="tab"><i class="lab la-spotify la-3x text-black"></i></a>
+                            </li>
+                        @endif
+                        @if(!empty($user->telegram_chat_id))
+                            <li class="nav-item">
+                                <a href="#telegram" class="nav-link" data-toggle="tab"><i class="lab la-telegram la-3x text-black"></i></a>
+                            </li>
+                        @endif
+                        <li class="nav-item">
+                            <a href="#profile" class="nav-link" data-toggle="tab"><i class="las la-user la-3x text-black"></i></a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('auth.logout.get') }}" class="nav-link"><i class="las la-sign-out-alt la-3x text-black"></i></a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+
+                        {{--HOME TAB--}}
+                        <div class="tab-pane fade show active" id="home">
+                            @include('tabs.home')
+                        </div>
+
+                        {{--SPOTIFY TAB--}}
+                        <div class="tab-pane fade" id="spotify">
+                            @include('tabs.spotify')
+                        </div>
+
+                        {{--TELEGRAM TAB--}}
+                        <div class="tab-pane fade" id="telegram">
+                            @include('tabs.telegram')
+                        </div>
+
+                        {{--PROFILE TAB--}}
+                        <div class="tab-pane fade" id="profile">
+                            @include('tabs.profile')
+                        </div>
+
+
+                    </div>
                 </div>
-                <hr><br>
-                <form action="{{ route('auth.email.post') }}" method="post">
-                    @csrf
-                    <div class="wrap-input100 validate-input m-b-16" data-validate = "Email is required">
-                        <input class="input100" type="text" name="email" placeholder="Email" value="{{ $user->email }}">
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="container-login100-form-btn m-t-17">
-                        <button class="login100-form-btn" type="submit">Update Email</button>
-                    </div>
-                </form>
-                <br><hr><br>
-                <form action="{{ route('auth.password.post') }}" method="post">
-                    @csrf
-                    <div class="wrap-input100 validate-input m-b-16" data-validate = "Password is required">
-                        <input class="input100" type="password" name="password" placeholder="New password">
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="wrap-input100 validate-input m-b-16" data-validate = "Password confirmation is required">
-                        <input class="input100" type="password" name="password_confirmation" placeholder="New password confirmation">
-                        <span class="focus-input100"></span>
-                    </div>
-                    <div class="container-login100-form-btn m-t-17">
-                        <button class="login100-form-btn" type="submit">Update Password</button>
-                    </div>
-                </form>
-                <br><hr><br>
-                @if(!empty($user->spotify_artists) && count($user->spotify_artists))
-                    <div class="container-login100-form-btn m-t-17">
-                        <a class="login100-form-btn unlinked" href="{{ route('following_list.get') }}">Artists</a>
-                    </div>
-                    <div class="container-login100-form-btn m-t-17">
-                        <a class="login100-form-btn unlinked" href="{{ route('latest_releases.get') }}">Latest Releases</a>
-                    </div>
-                @endif
+
                 <div class="container-login100-form-btn m-t-17">
                     <a class="login100-form-btn unlinked" href="{{ route('landing.get') }}">Go home</a>
                 </div>
-                @if(Sentinel::check() && Sentinel::inRole('admin'))
+                {{--@todo: make admin-side functional--}}
+                {{--@if(Sentinel::check() && Sentinel::inRole('admin'))
                     <div class="container-login100-form-btn m-t-17">
                         <a class="login100-form-btn unlinked" href="{{ route('telegram.webhook.get') }}">Set Telegram Webhook</a>
                     </div>
-                @endif
-                <div class="container-login100-form-btn m-t-17">
-                    <a class="login100-form-btn unlinked" href="{{ route('auth.logout.get') }}">Logout</a>
-                </div>
+                @endif--}}
 
             </div>
         </div>
