@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\SpotifyRelease;
 use App\Models\User;
+use App\Models\UserSpotifyArtist;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +49,7 @@ class TelegramNotifyUsers extends Command
     {
         $users = User::query()->whereNotNull(['spotify_access_token', 'spotify_refresh_token', 'telegram_chat_id'])->get();
         foreach ($users as $user) {
-            $user_artists_ids = DB::table('user_spotify_artists')->where('user_id', $user->id)->where('is_active', 1)->get();
+            $user_artists_ids = UserSpotifyArtist::query()->where('user_id', $user->id)->where('is_active', 1)->get();
             $releases = SpotifyRelease::query()
                 ->whereIn('artist_id', $user_artists_ids->pluck('artist_id')->toArray())
                 ->whereBetween('release_date', [Carbon::yesterday(), Carbon::today()->subMinutes(1)])

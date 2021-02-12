@@ -27,6 +27,7 @@ class User extends EloquentUser
 
     public function spotify_artists()
     {
-        return $this->belongsToMany('App\Models\SpotifyArtist','user_spotify_artists','user_id', 'artist_id');
+        return $this->belongsToMany('App\Models\SpotifyArtist','user_spotify_artists','user_id', 'artist_id')
+            ->withPivot('is_active');
     }
 }

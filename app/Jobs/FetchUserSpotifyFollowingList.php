@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\SpotifyArtist;
 use App\Models\User;
+use App\Models\UserSpotifyArtist;
 use Carbon\Carbon;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Bus\Queueable;
@@ -70,7 +71,7 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
                                 'spotify_data' => $item,
                                 'last_synced_at' => Carbon::now(),
                             ]);
-                            DB::table('user_spotify_artists')->updateOrInsert([
+                            UserSpotifyArtist::query()->updateOrInsert([
                                 'user_id' => $this->user->id,
                                 'artist_id' => $artist->id,
                             ]);
@@ -83,7 +84,7 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
                 }
             } while (!empty($following_list->artists->next) && !empty($following_list->artists->cursors->after));
             if (!empty($ids)) {
-                DB::table('user_spotify_artists')->where('user_id', $this->user->id)->whereNotIn('artist_id', $ids)->delete();
+                UserSpotifyArtist::query()->where('user_id', $this->user->id)->whereNotIn('artist_id', $ids)->delete();
             }
 
             $this->log->info('FINISH_FETCH_ARTISTS_LIST_BY_USER', ['user' => $this->user, 'artists_ids' => $ids]);

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Jobs\FetchUserSpotifyFollowingList;
 use App\Models\SpotifyArtist;
+use App\Models\UserSpotifyArtist;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use SpotifyWebAPI\Session;
 use SpotifyWebAPI\SpotifyWebAPI;
 
@@ -42,6 +44,23 @@ class SpotifyController extends Controller
                 return redirect($this->session->getAuthorizeUrl($options));
             }
         }
+    }
+
+    public function getToggleArtistStatus($id)
+    {
+        if ($artist = SpotifyArtist::query()->find($id)) {
+            if ($user = Sentinel::getUser()) {
+                $user_artist = UserSpotifyArtist::query()->where('user_id', $user->id)->where('artist_id', $artist->id)->first();
+                if ($user_artist) {
+                    $user_artist->is_active = $user_artist->is_active == 1 ? 0 : 1;
+                    $user_artist->save();
+                    toastr('Artist notifications successfully '.($user_artist->is_active == 1 ? 'enabled' : 'disabled'));
+                    return redirect()->back();
+                }
+            }
+        }
+        toastr('Error toggling artist status', 'error');
+        return redirect()->back();
     }
 
     public function getSpotifyRedirectUrlCallback(Request $request)

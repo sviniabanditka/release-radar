@@ -20,7 +20,7 @@
                         @foreach($artists as $artist)
                             <tr>
                                 <td><a href="{{ $artist->spotify_url ?? '#' }}" target="_blank">{{ $artist->name }}</a></td>
-                                <td><a href="#"><img src="{{ asset('assets/images/on.png') }}" alt="On" style="max-width: 50px;"></a></td>
+                                <td><a href="{{ route('artist.toggle.get', ['id' => $artist->id]) }}"><img src="{{ asset('assets/images/'.($artist->pivot->is_active ? 'on' : 'off').'.png') }}" alt="On" style="max-width: 50px;"></a></td>
                                 <td><a href="{{ route('artist_releases.get', ['id' => $artist->id]) }}">Show</a></td>
                             </tr>
                         @endforeach
