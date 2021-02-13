@@ -20,11 +20,23 @@ class SpotifyRelease extends Model
         'created_at',
         'updated_at',
         'artist_id',
-        'last_updated'
+        'last_updated',
+        'album_group',
+        'album_type',
+        'cover',
+        'artists'
     ];
 
     protected $casts = [
-        'spotify_data' => 'array'
+        'spotify_data' => 'array',
+        'artists' => 'array'
+    ];
+
+    public static $TYPES = [
+        'single' => 'Single',
+        'album' => 'Album',
+        'appears_on' => 'Appears On',
+        'compilation' => 'Compilation'
     ];
 
     public function artist()

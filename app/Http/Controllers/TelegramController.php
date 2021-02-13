@@ -42,4 +42,37 @@ class TelegramController extends Controller
         Telegram::commandsHandler(true);
         return 'ok';
     }
+
+    public function postUpdateSettings()
+    {
+        $data = [];
+        if (request()->has('telegram_notifications_period')) {
+            $period = request()->get('telegram_notifications_period');
+            $data['telegram_notifications_period'] = [
+                'type' => $period['type'] ?? 'day',
+                'day' => $period['day'] ?? 0,
+                'time' => $period['time'] ?? 12,
+            ];
+        }
+        if (request()->has('telegram_notifications_types')) {
+            $types = request()->get('telegram_notifications_types');
+            $data['telegram_notifications_types'] = [
+                'album' => !empty($types['album']) ? 1 : 0,
+                'single' => !empty($types['single']) ? 1 : 0,
+                'appears_on' => !empty($types['appears_on']) ? 1 : 0,
+                'compilation' => !empty($types['compilation']) ? 1 : 0,
+            ];
+        }
+        $user = Sentinel::getUser();
+        if ($user) {
+            if(Sentinel::update($user, $data)) {
+                toastr('Telegram settings successfully updated');
+            } else {
+                toastr('Update Telegram settings error', 'error');
+            }
+        } else {
+            toastr('Unauthorized', 'error');
+        }
+        return redirect()->back();
+    }
 }

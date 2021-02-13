@@ -56,6 +56,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('spotify/callback', 'SpotifyController@getSpotifyRedirectUrlCallback')->name('spotify.callback.get');
 
             Route::get('bot/telegram/toggle', 'TelegramController@getToggleTelegramStatus')->name('telegram.toggle.get');
+            Route::post('telegram/update', 'TelegramController@postUpdateSettings')->name('telegram.update.post');
         });
 
         //ADMIN
@@ -65,4 +66,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
     });
 });
 
-Route::get('test', function() {return view('auth.forgot_success');});
+Route::get('test', function() {
+    $user = \Cartalyst\Sentinel\Laravel\Facades\Sentinel::getUser();
+    return view('test', compact('user'));
+});

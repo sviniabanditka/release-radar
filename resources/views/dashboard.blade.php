@@ -10,23 +10,23 @@
                 <div>
                     <ul class="nav nav-tabs nav-justified">
                         <li class="nav-item">
-                            <a href="#home" class="nav-link active" data-toggle="tab"><i class="las la-home la-3x text-black"></i></a>
+                            <a href="#home" class="nav-link active" data-toggle="tab" title="Home"><i class="las la-home la-3x text-black"></i></a>
                         </li>
                         @if(!empty($user->spotify_artists) && count($user->spotify_artists))
                             <li class="nav-item">
-                                <a href="#spotify" class="nav-link" data-toggle="tab"><i class="lab la-spotify la-3x text-black"></i></a>
+                                <a href="#spotify" class="nav-link" data-toggle="tab" title="Spotify Settings"><i class="lab la-spotify la-3x text-black"></i></a>
                             </li>
                         @endif
                         @if(!empty($user->telegram_chat_id))
                             <li class="nav-item">
-                                <a href="#telegram" class="nav-link" data-toggle="tab"><i class="lab la-telegram la-3x text-black"></i></a>
+                                <a href="#telegram" class="nav-link" data-toggle="tab" title="Telegram Settings"><i class="lab la-telegram la-3x text-black"></i></a>
                             </li>
                         @endif
                         <li class="nav-item">
-                            <a href="#profile" class="nav-link" data-toggle="tab"><i class="las la-user la-3x text-black"></i></a>
+                            <a href="#profile" class="nav-link" data-toggle="tab" title="Profile Settings"><i class="las la-user la-3x text-black"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('auth.logout.get') }}" class="nav-link"><i class="las la-sign-out-alt la-3x text-black"></i></a>
+                            <a href="{{ route('auth.logout.get') }}" class="nav-link" title="Logout" id="logout"><i class="las la-sign-out-alt la-3x text-black"></i></a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -70,3 +70,15 @@
     </div>
     <div id="dropDownSelect1"></div>
 @endsection
+
+@push('scripts')
+    <script type="text/javascript">
+        $('[data-toggle="tab"],[id="logout"]').tooltip({
+            trigger: 'hover',
+            placement: 'top',
+            animate: true,
+            delay: 1000,
+            container: 'body'
+        });
+    </script>
+@endpush
