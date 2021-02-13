@@ -43,4 +43,9 @@ class SpotifyRelease extends Model
     {
         return $this->belongsTo('App\Models\SpotifyArtist','artist_id','id');
     }
+
+    public function telegram_notifications()
+    {
+        return $this->hasMany('App\Models\TelegramNotification', 'release_id', 'id');
+    }
 }

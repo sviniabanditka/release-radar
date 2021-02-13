@@ -68,5 +68,6 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
 Route::get('test', function() {
     $user = \Cartalyst\Sentinel\Laravel\Facades\Sentinel::getUser();
+    dd($user->getNextTelegramNotificationTime());
     return view('test', compact('user'));
 });

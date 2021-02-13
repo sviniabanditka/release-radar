@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 class TelegramNotifyUsers extends Command
@@ -49,31 +50,42 @@ class TelegramNotifyUsers extends Command
     {
         $users = User::query()->whereNotNull(['spotify_access_token', 'spotify_refresh_token', 'telegram_chat_id'])->get();
         foreach ($users as $user) {
-            $user_artists_ids = UserSpotifyArtist::query()->where('user_id', $user->id)->where('is_active', 1)->get();
-            $releases = SpotifyRelease::query()
-                ->whereIn('artist_id', $user_artists_ids->pluck('artist_id')->toArray())
-                ->whereBetween('release_date', [Carbon::yesterday(), Carbon::today()->subMinutes(1)])
-                ->orderBy('artist_id')
-                ->get();
-            if (!empty($releases) && count($releases) > 0) {
-                $chunked_releases = $releases->chunk(10);
-                foreach ($chunked_releases as $chunk) {
-                    if (!empty($chunk) && count($chunk) > 0) {
-                        $text = 'Your new yesterday releases:'.PHP_EOL.PHP_EOL;
-                        foreach ($chunk as $release) {
-                            $text .= '<a href="' . $release->artist->spotify_url . '">' . $release->artist->name . '</a> - <a href="' . $release->spotify_url . '">' . $release->name . '</a>' . PHP_EOL . PHP_EOL;
+            $user_next_notification_time = $user->getNextTelegramNotificationTime();
+            if ($user_next_notification_time->lessThan(Carbon::now())) {
+                $user_artists_ids = UserSpotifyArtist::query()->where('user_id', $user->id)->where('is_active', 1)->get();
+                $releases = SpotifyRelease::query()
+                    ->whereIn('artist_id', $user_artists_ids->pluck('artist_id')->toArray())
+                    ->whereIn('album_group', $user->getAllowedNotificationsTypes())
+                    ->whereNotIn('id', $user->telegram_notifications->pluck('release_id')->toArray())
+                    ->orderBy('artist_id')
+                    ->get();
+                if (!empty($releases) && count($releases) > 0) {
+                    $key = Str::random(12);
+                    $chunked_releases = $releases->chunk(10);
+                    foreach ($chunked_releases as $chunk) {
+                        if (!empty($chunk) && count($chunk) > 0) {
+                            $text = 'Your new yesterday releases:' . PHP_EOL . PHP_EOL;
+                            foreach ($chunk as $release) {
+                                $text .= '<a href="' . $release->artist->spotify_url . '">' . $release->artist->name . '</a> - <a href="' . $release->spotify_url . '">' . $release->name . '</a>' . PHP_EOL . PHP_EOL;
+                                $user->telegram_notifications()->create([
+                                    'user_id' => $user->id,
+                                    'release_id' => $release->id,
+                                    'key' => $key,
+                                    'created_at' => Carbon::now()
+                                ]);
+                            }
+                            Telegram::sendMessage([
+                                'chat_id' => $user->telegram_chat_id,
+                                'text' => $text,
+                                'parse_mode' => 'HTML',
+                            ]);
+                            $user->last_notified = Carbon::now();
+                            $user->save();
                         }
-                        Telegram::sendMessage([
-                            'chat_id' => $user->telegram_chat_id,
-                            'text' => $text,
-                            'parse_mode' => 'HTML',
-                        ]);
                     }
+                    $this->log->info('NOTIFY_TELEGRAM_USER', ['user_email' => $user->email, 'releases' => $releases->pluck('spotify_id')->toArray()]);
                 }
-                $this->log->info('NOTIFY_TELEGRAM_USER', ['user_email' => $user->email, 'releases' => $releases->pluck('spotify_id')->toArray()]);
             }
-            $user->last_notified = Carbon::now();
-            $user->save();
         }
         return 0;
     }

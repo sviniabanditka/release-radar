@@ -8,6 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use SpotifyWebAPI\Session;
@@ -110,6 +111,10 @@ class SyncSpotifyReleases extends Command
                                             ], [
                                                 'name' => $item->name,
                                                 'spotify_url' => $item->external_urls->spotify ?? '',
+                                                'album_type' => $item->album_type ?? '',
+                                                'album_group' => $item->album_group ?? '',
+                                                'artists' => $item->artists ?? '',
+                                                'cover' => !empty($item->images) ? Arr::first($item->images)['url'] : '',
                                                 'spotify_data' => $item,
                                                 'release_date' => $release_date,
                                                 'artist_id' => $artist->id,

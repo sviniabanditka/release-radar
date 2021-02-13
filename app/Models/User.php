@@ -54,21 +54,20 @@ class User extends EloquentUser
         $date = Carbon::today()->addHours(12)->lessThanOrEqualTo(Carbon::now()) ? Carbon::today()->addHours(12) : Carbon::tomorrow()->addHours(12);
         if ($period['type'] == 'day') {
             $date = Carbon::today()->addHours($period_time);
-            if ($date->lessThan(Carbon::now())) {
-                $date = Carbon::tomorrow()->addHours($period_time);
+            if ($date->lessThan(Carbon::now()) && $date->diffInMinutes(Carbon::now()) > 20) {
+                $date = $date->addDay();
             }
         } elseif (!empty($period['day']) || (isset($period['day']) && $period['day'] == 0)) {
-            if(Carbon::today()->dayOfWeek > $period['day']) {
-                $date = Carbon::today()->addWeek()->startOfWeek(0)->addDays($period['day']);
-            } else {
-                $date = Carbon::today()->startOfWeek(0)->addDays($period['day']);
-            }
-            if ($date->lessThan(Carbon::now())) {
-                $date = $date->addDay()->addHours($period_time);
-            } else {
-                $date = $date->addHours($period_time);
+            $date = Carbon::today()->startOfWeek(0)->addDays($period['day'])->addHours($period_time);
+            if($date->lessThan(Carbon::now()) && $date->diffInMinutes(Carbon::now()) > 20) {
+                $date = $date->addWeek();
             }
         }
         return $date;
+    }
+
+    public function telegram_notifications()
+    {
+        return $this->hasMany('App\Models\TelegramNotification', 'user_id', 'id');
     }
 }
