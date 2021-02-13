@@ -36,7 +36,7 @@
                                         </div>
                                         <div style="padding-bottom:0;">
                                             Last Release:
-                                            <a href="{{ $artist->releases->last()->spotify_url ?? '#' }}" target="_blank" style="color:#666666; font-size:1rem;" class="unlinked">{{ $artist->releases->last()->name }}</a>
+                                            <a href="{{ $artist->releases->last()->spotify_url ?? '#' }}" target="_blank" style="color:#666666; font-size:1rem;" class="unlinked">{{ $artist->releases->sortByDesc('release_date')->first()->name }}</a>
                                         </div>
                                     </div>
                                 </div>
