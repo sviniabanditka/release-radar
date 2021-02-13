@@ -128,7 +128,7 @@ class SpotifyController extends Controller
                     $releases->push($release);
                 }
             }
-            $releases = $releases->sortByDesc('release_date')->take(100);
+            $releases = $releases->whereIn('album_group', $user->getAllowedNotificationsTypes())->sortByDesc('release_date')->take(100);
             if (request()->has('q') && !empty(request()->get('q'))) {
                 $releases = $releases->filter(function ($item) {
                     return false !== stripos($item->name, request()->get('q'));

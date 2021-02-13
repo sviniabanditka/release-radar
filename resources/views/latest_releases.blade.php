@@ -1,18 +1,18 @@
-@extends('auth.master')
+@extends('master')
 
 @section('title', 'Latest Releases')
 
 @section('content')
     <div class="limiter">
-        <div class="container-login100">
-            <div class="wrap-login100 p-t-50 p-b-90">
-                <div class="title m-b-md" style="font-size: 60px;">Latest Releases</div>
+        <div class="container">
+            <div class="wrap p-t-50 p-b-90">
+                <div class="title mb-4" style="font-size: 60px;">Latest Releases</div>
                 <div class="flex-sb-m w-full p-t-3 p-b-24">
                     <div class="row">
 
                         <form method="get" action="" style="width: 100%; padding-bottom: 20px;">
-                            <input style="width:70%; float:left;" class="input100" type="text" name="q" placeholder="Filter..." value="{{ request()->get('q') ?? '' }}">
-                            <button style="width:25%; float:right;" class="login100-form-btn" type="submit">Apply</button>
+                            <input class="filter-input" type="text" name="q" placeholder="Filter..." value="{{ request()->get('q') ?? '' }}">
+                            <button class="filter-submit" type="submit">Apply</button>
                         </form>
 
                         @foreach($releases as $release)
@@ -28,7 +28,7 @@
                                         </a>
                                     </div>
                                     <div>
-                                        <h2><a href="{{ $release->spotify_url ?? '#' }}" style="color:#666666; font-size:1.7rem;" class="unlinked"  target="_blank">{{ $release->name }}</a></h2>
+                                        <h2 style="line-height:0.1rem;"><a href="{{ $release->spotify_url ?? '#' }}" style="color:#666666; font-size:1.2rem;" class="unlinked"  target="_blank">{{ $release->name }}</a></h2>
                                         <div style="padding-bottom:0;">
                                             Release Date: {{ \Carbon\Carbon::parse($release->release_date)->format('d.m.Y') }}
                                             <br>
@@ -56,16 +56,16 @@
                         @if($releases->lastPage() > 1)
                             <div style="display: flex;justify-content: space-between;width: 100%;">
                                 @if($releases->currentPage() > 1)
-                                    <a class="login100-form-btn unlinked" style="margin-right: 5px;" href="?{{ http_build_query(array_merge($_GET, array("page"=>$releases->currentPage()-1))) }}"><<</a>
+                                    <a class="form-btn unlinked" style="margin-right: 5px;" href="?{{ http_build_query(array_merge($_GET, array("page"=>$releases->currentPage()-1))) }}"><<</a>
                                 @endif
-                                <a class="login100-form-btn unlinked" style="margin-right: 5px;" href="">{{ $releases->currentPage() }}</a>
+                                <a class="form-btn unlinked" style="margin-right: 5px;" href="">{{ $releases->currentPage() }}</a>
                                 @if($releases->lastPage() > $releases->currentPage())
-                                    <a class="login100-form-btn unlinked" style="margin-right: 0;" href="?{{ http_build_query(array_merge($_GET, array("page"=>$releases->currentPage()+1))) }}">>></a>
+                                    <a class="form-btn unlinked" style="margin-right: 0;" href="?{{ http_build_query(array_merge($_GET, array("page"=>$releases->currentPage()+1))) }}">>></a>
                                 @endif
                             </div>
                         @endif
-                        <div class="container-login100-form-btn m-t-17">
-                            <a class="login100-form-btn unlinked" href="{{ route('dashboard.get') }}">Dashboard</a>
+                        <div class="container-form-btn m-t-17">
+                            <a class="form-btn unlinked" href="{{ route('dashboard.get') }}#spotify">Dashboard</a>
                         </div>
                     </div>
                 </div>

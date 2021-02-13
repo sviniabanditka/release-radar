@@ -39,7 +39,18 @@ class TelegramSendMessage extends Command
      */
     public function handle()
     {
-        $text = "";
+        $text = "WHAT\`S NEW 14.02\n";
+        $text .= "Added:\n";
+        $text .= "- Custom notifications period\n";
+        $text .= "- Select notifications types\n";
+        $text .= "Fixed:\n";
+        $text .= "- Toggling artist notifiable status\n";
+        $text .= "- Server timezone\n";
+        $text .= "- Release duplicates in notifications\n";
+        $text .= "Other:\n";
+        $text .= "- Experiments with dashboard UI\n";
+        $text .= "- Spotify API improvements\n";
+        $text .= "- Other minor fixes&improvements";
 
 
         $users = User::query()->whereNotNull('telegram_chat_id')->get();

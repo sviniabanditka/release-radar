@@ -57,6 +57,7 @@ class TelegramNotifyUsers extends Command
                     ->whereIn('artist_id', $user_artists_ids->pluck('artist_id')->toArray())
                     ->whereIn('album_group', $user->getAllowedNotificationsTypes())
                     ->whereNotIn('id', $user->telegram_notifications->pluck('release_id')->toArray())
+                    ->where('release_date', '>', Carbon::today()->subWeek())
                     ->orderBy('artist_id')
                     ->get();
                 if (!empty($releases) && count($releases) > 0) {

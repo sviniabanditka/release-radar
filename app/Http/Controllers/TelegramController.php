@@ -73,6 +73,6 @@ class TelegramController extends Controller
         } else {
             toastr('Unauthorized', 'error');
         }
-        return redirect()->back();
+        return redirect()->to(url()->previous().'#telegram');
     }
 }

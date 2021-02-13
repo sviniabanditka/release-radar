@@ -164,7 +164,7 @@ class AuthController extends Controller
             }
         }
         toastr('Error updating email');
-        return redirect()->route('dashboard.get');
+        return redirect()->to(route('dashboard.get').'#profile');
 
     }
 
@@ -180,7 +180,7 @@ class AuthController extends Controller
             }
         }
         toastr('Error updating password');
-        return redirect()->route('dashboard.get');
+        return redirect()->to(route('dashboard.get').'#profile');
     }
 
     public function getLogout()

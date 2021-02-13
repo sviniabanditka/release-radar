@@ -2,28 +2,28 @@
 <form action="{{ route('telegram.update.post') }}" method="post">
     @csrf
     <div>Notifications period (UTC +2):</div>
-    <div class="wrap-input100 validate-input m-b-16">
-        <select name="telegram_notifications_period[type]" id="telegram_notifications_period[type]" class="input100">
+    <div class="wrap-input m-b-16">
+        <select name="telegram_notifications_period[type]" id="telegram_notifications_period[type]" class="input">
             <option value="day" {{ $user->telegram_notifications_period['type'] == 'day' ? 'selected' : '' }}>Daily</option>
             <option value="week" {{ $user->telegram_notifications_period['type'] == 'week' ? 'selected' : '' }}>Weekly</option>
         </select>
-        <span class="focus-input100"></span>
+        <span class="focus-input"></span>
     </div>
-    <div class="wrap-input100 validate-input m-b-16" id="telegram_notifications_period[day]" style="{{ $user->telegram_notifications_period['type'] == 'day' ? 'display:none;' : '' }}">
-        <select name="telegram_notifications_period[day]" class="input100">
+    <div class="wrap-input m-b-16" id="telegram_notifications_period[day]" style="{{ $user->telegram_notifications_period['type'] == 'day' ? 'display:none;' : '' }}">
+        <select name="telegram_notifications_period[day]" class="input">
             @foreach(\Carbon\Carbon::getDays() as $key => $day)
                 <option value="{{ $key }}" {{ $user->telegram_notifications_period['day'] == $key ? 'selected' : '' }}>{{ $day }}</option>
             @endforeach
         </select>
-        <span class="focus-input100"></span>
+        <span class="focus-input"></span>
     </div>
-    <div class="wrap-input100 validate-input m-b-16">
-        <select name="telegram_notifications_period[time]" id="telegram_notifications_period[time]" class="input100">
+    <div class="wrap-input m-b-16">
+        <select name="telegram_notifications_period[time]" id="telegram_notifications_period[time]" class="input">
             @foreach (range(1,23) as $hour)
                 <option value="{{ $hour }}" {{ $user->telegram_notifications_period['time'] == $hour ? 'selected' : '' }}>{{ \Illuminate\Support\Str::length($hour) == 1 ? '0'.$hour.':00' : $hour.':00' }}</option>
             @endforeach
         </select>
-        <span class="focus-input100"></span>
+        <span class="focus-input"></span>
     </div>
 
     <br><hr><br>
@@ -59,11 +59,11 @@
                 </td>
             </tr>
         </table>
-        <span class="focus-input100"></span>
+        <span class="focus-input"></span>
     </div>
     <br>
-    <div class="container-login100-form-btn m-t-17">
-        <button class="login100-form-btn" type="submit">Update Settings</button>
+    <div class="container-form-btn m-t-17">
+        <button class="form-btn" type="submit">Update Settings</button>
     </div>
 </form>
 
@@ -79,59 +79,4 @@
             }
         }
     </script>
-@endpush
-
-@push('css')
-    <style type="text/css">
-        .option-input {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            -ms-appearance: none;
-            -o-appearance: none;
-            appearance: none;
-            position: relative;
-            top: 13.33333px;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            height: 30px;
-            width: 30px;
-            transition: all 0.15s ease-out 0s;
-            background: #a0a1a2;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            display: inline-block;
-            margin-right: 0.5rem;
-            outline: none;
-            position: relative;
-            z-index: 1000;
-        }
-        .option-input:hover {
-            background: #9faab7;
-        }
-        .option-input:checked {
-            background: #626262;
-        }
-        .option-input:checked::before {
-            height: 30px;
-            width: 30px;
-            position: absolute;
-            content: '✔';
-            display: inline-block;
-            font-size: 26.66667px;
-            text-align: center;
-            line-height: 30px;
-        }
-        .option-input:checked::after {
-            -webkit-animation: click-wave 0.65s;
-            -moz-animation: click-wave 0.65s;
-            animation: click-wave 0.65s;
-            background: #40e0d0;
-            content: '';
-            display: block;
-            position: relative;
-            z-index: 100;
-        }
-    </style>
 @endpush
