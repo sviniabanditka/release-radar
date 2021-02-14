@@ -71,6 +71,12 @@
     <div id="dropDownSelect1"></div>
 @endsection
 
+@push('css')
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.1/dist/tagify.css">
+@endpush
+
 @push('scripts')
-    <script type="text/javascript" src="{{ asset('assets/js/dashboard.js') }}">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.1/dist/tagify.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@yaireo/tagify@3.22.1/dist/jQuery.tagify.min.js"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/dashboard.js') }}"></script>
 @endpush

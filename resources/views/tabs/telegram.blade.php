@@ -28,7 +28,7 @@
 
     <br><hr><br>
     <div>Notifications types:</div>
-    <div class="">
+    <div>
         <table style="width: 100%; text-align: center;">
             <tr style="width: 100%;">
                 <td>
@@ -61,22 +61,14 @@
         </table>
         <span class="focus-input"></span>
     </div>
+    <br><hr><br>
+    <div>Notification format for each release:<br><span style="font-size:0.8rem;">Type "@" to insert custom variable</span></div>
+    <div class="wrap-input m-b-16">
+        <textarea name="telegram_notifications_format" id="telegram_notifications_format" class="textarea" style="width: 100%;height:100%;">{{ $user->telegram_notifications_format ?? '' }}</textarea>
+        <span class="focus-input"></span>
+    </div>
     <br>
     <div class="container-form-btn m-t-17">
-        <button class="form-btn" type="submit">Update Settings</button>
+        <button class="form-btn" type="submit">Save Settings</button>
     </div>
 </form>
-
-
-@push('scripts')
-    <script type="text/javascript">
-        let select = document.getElementById("telegram_notifications_period[type]");
-        select.onchange=function(){
-            if(select.value === "week"){
-                document.getElementById("telegram_notifications_period[day]").style.display="block";
-            }else{
-                document.getElementById("telegram_notifications_period[day]").style.display="none";
-            }
-        }
-    </script>
-@endpush

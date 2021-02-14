@@ -62,12 +62,16 @@ class TelegramNotifyUsers extends Command
                     ->get();
                 if (!empty($releases) && count($releases) > 0) {
                     $key = Str::random(12);
-                    $chunked_releases = $releases->chunk(10);
+                    $chunked_releases = $releases->chunk(5);
                     foreach ($chunked_releases as $chunk) {
                         if (!empty($chunk) && count($chunk) > 0) {
-                            $text = 'Your new yesterday releases:' . PHP_EOL . PHP_EOL;
+                            $text = 'Your new releases:'.PHP_EOL.PHP_EOL;
+
                             foreach ($chunk as $release) {
-                                $text .= '<a href="' . $release->artist->spotify_url . '">' . $release->artist->name . '</a> - <a href="' . $release->spotify_url . '">' . $release->name . '</a>' . PHP_EOL . PHP_EOL;
+                                $release_text = $user->getReleaseTextByFormat($release);
+                                if (!empty($release_text)) {
+                                    $text .= $release_text.PHP_EOL.PHP_EOL;
+                                }
                                 $user->telegram_notifications()->create([
                                     'user_id' => $user->id,
                                     'release_id' => $release->id,

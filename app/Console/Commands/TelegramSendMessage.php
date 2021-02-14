@@ -39,10 +39,11 @@ class TelegramSendMessage extends Command
      */
     public function handle()
     {
-        $text = "WHAT\`S NEW 14.02\n";
+        $text = "UPDATE 14.02\n";
         $text .= "Added:\n";
         $text .= "- Custom notifications period\n";
         $text .= "- Select notifications types\n";
+        $text .= "- Set custom notification format\n";
         $text .= "Fixed:\n";
         $text .= "- Toggling artist notifiable status\n";
         $text .= "- Server timezone\n";

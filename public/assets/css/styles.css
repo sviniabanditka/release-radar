@@ -212,6 +212,23 @@ iframe {
     padding: 0 20px 0 38px;
 }
 
+.textarea {
+    font-family: 'Nunito', sans-serif !important;
+    color: #000000;
+    line-height: 1.2;
+    font-size: 15px;
+
+    display: block;
+    width: 100%;
+    background: transparent;
+    height: auto;
+    min-height: 75px;
+    padding: 5px 0 0 5px;
+}
+
+tags span {
+    display: inline-flex;
+}
 
 /*------------------------------------------------------------------
 [ Focus Input ]*/

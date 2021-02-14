@@ -63,6 +63,7 @@ class TelegramController extends Controller
                 'compilation' => !empty($types['compilation']) ? 1 : 0,
             ];
         }
+        $data['telegram_notifications_format'] = request()->get('telegram_notifications_format') ?? null;
         $user = Sentinel::getUser();
         if ($user) {
             if(Sentinel::update($user, $data)) {

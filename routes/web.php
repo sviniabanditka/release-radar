@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,6 +69,22 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
 Route::get('test', function() {
     $user = \Cartalyst\Sentinel\Laravel\Facades\Sentinel::getUser();
-    dd($user->getNextTelegramNotificationTime());
-    return view('test', compact('user'));
+    if ($user) {
+        $releases = collect();
+        foreach ($user->spotify_artists as $artist) {
+            foreach ($artist->releases as $release) {
+                $releases->push($release);
+            }
+        }
+        $releases = $releases->sortByDesc('release_date')->take(10);
+        $text = 'Your new releases:'.PHP_EOL;
+        foreach ($releases as $release) {
+            $release_text = $user->getReleaseTextByFormat($release);
+            if (!empty($release_text)) {
+                $text .= $release_text.PHP_EOL;
+            }
+        }
+        dd($text);
+    }
+    return true;
 });
