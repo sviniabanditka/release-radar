@@ -49,6 +49,7 @@ class TelegramNotifyUsers extends Command
     public function handle()
     {
         $users = User::query()->whereNotNull(['spotify_access_token', 'spotify_refresh_token', 'telegram_chat_id'])->get();
+        $this->log->info('START_NOTIFY_TELEGRAM_USER');
         foreach ($users as $user) {
             $user_next_notification_time = $user->getNextTelegramNotificationTime();
             if ($user_next_notification_time->lessThan(Carbon::now())) {
