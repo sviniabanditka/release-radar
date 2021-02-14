@@ -6,7 +6,7 @@
     <div class="limiter">
         <div class="container">
             <div class="wrap p-t-50 p-b-90">
-                <div class="title mb-4" style="font-size: 60px;">Releases</div>
+                <div class="title mb-4">Releases</div>
                 <div class="center" style="text-align: center; font-weight: bold">
                     <a href="{{ $artist->spotify_url ?? '#' }}" target="_blank" class="unlinked" style="color:#666666; font-size:1.7rem;">{{ $artist->name }}</a> <br><br>
                 </div>

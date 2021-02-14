@@ -1,5 +1,5 @@
 <br>
-<div class="flex-sb-m w-full p-t-3 p-b-24" style="text-align: center;">
+<div class="flex-sb-m w-full p-t-3 p-b-24" style="text-align: center; width: 100%;">
     <table style="width: 100%;">
         <thead>
         <tr>

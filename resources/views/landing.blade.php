@@ -42,18 +42,40 @@
             text-align: center;
         }
 
-        .title {
-            font-size: 84px;
+        @media screen and (min-width: 601px) {
+            .title {
+                font-size: 5vw;
+            }
+
+            .links > a {
+                color: #636b6f;
+                padding: 0 25px;
+                font-size: 13px;
+                font-weight: 600;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
         }
 
-        .links > a {
-            color: #636b6f;
-            padding: 0 25px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: .1rem;
-            text-decoration: none;
-            text-transform: uppercase;
+        /* If the screen size is 600px wide or less, set the font-size of <div> to 30px */
+        @media screen and (max-width: 600px) {
+            .title {
+                font-size: 15vw;
+            }
+
+            .links > a {
+                color: #636b6f;
+                padding: 0 25px;
+                font-size: 13px;
+                font-weight: 600;
+                line-height: 3rem;
+                letter-spacing: .1rem;
+                text-decoration: none;
+                text-transform: uppercase;
+                display: block;
+                justify-content:center;
+            }
         }
     </style>
 </head>

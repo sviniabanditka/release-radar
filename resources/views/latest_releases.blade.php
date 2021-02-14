@@ -6,7 +6,7 @@
     <div class="limiter">
         <div class="container">
             <div class="wrap p-t-50 p-b-90">
-                <div class="title mb-4" style="font-size: 60px;">Latest Releases</div>
+                <div class="title mb-4">Latest Releases</div>
                 <div class="flex-sb-m w-full p-t-3 p-b-24">
                     <div class="row">
 
