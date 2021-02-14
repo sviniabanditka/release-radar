@@ -42,14 +42,14 @@ class TelegramSendMessage extends Command
         $text = "UPDATE 14.02\n";
         $text .= "Added:\n";
         $text .= "- Custom notifications period\n";
-        $text .= "- Select notifications types\n";
-        $text .= "- Set custom notification format\n";
+        $text .= "- Allowed releases types\n";
+        $text .= "- Custom notification format\n";
         $text .= "Fixed:\n";
         $text .= "- Toggling artist notifiable status\n";
         $text .= "- Server timezone\n";
-        $text .= "- Release duplicates in notifications\n";
+        $text .= "- Release duplicates\n";
         $text .= "Other:\n";
-        $text .= "- Experiments with dashboard UI\n";
+        $text .= "- Update dashboard UI\n";
         $text .= "- Spotify API improvements\n";
         $text .= "- Other minor fixes&improvements";
 
