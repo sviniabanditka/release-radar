@@ -93,6 +93,7 @@ class TelegramNotifyUsers extends Command
                 }
             }
         }
+        $this->log->info('FINISH_NOTIFY_TELEGRAM_USER');
         return 0;
     }
 }
