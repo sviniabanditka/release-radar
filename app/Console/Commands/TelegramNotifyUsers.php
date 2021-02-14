@@ -53,6 +53,7 @@ class TelegramNotifyUsers extends Command
         foreach ($users as $user) {
             $user_next_notification_time = $user->getNextTelegramNotificationTime();
             if ($user_next_notification_time->lessThan(Carbon::now())) {
+                $this->log->info('NOTIFY_TELEGRAM_USER', ['user' => $user->email]);
                 $user_artists_ids = UserSpotifyArtist::query()->where('user_id', $user->id)->where('is_active', 1)->get();
                 $releases = SpotifyRelease::query()
                     ->whereIn('artist_id', $user_artists_ids->pluck('artist_id')->toArray())
