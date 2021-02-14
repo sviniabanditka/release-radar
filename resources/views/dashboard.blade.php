@@ -58,12 +58,11 @@
                 <div class="container-form-btn m-t-17">
                     <a class="form-btn unlinked" href="{{ route('landing.get') }}">Go home</a>
                 </div>
-                {{--@todo: make admin-side functional--}}
-                {{--@if(Sentinel::check() && Sentinel::inRole('admin'))
-                    <div class="container-login100-form-btn m-t-17">
-                        <a class="login100-form-btn unlinked" href="{{ route('telegram.webhook.get') }}">Set Telegram Webhook</a>
+                @if(Sentinel::check() && Sentinel::inRole('admin'))
+                    <div class="container-form-btn m-t-17">
+                        <a class="form-btn unlinked" href="{{ route('admin.index.get') }}">Admin</a>
                     </div>
-                @endif--}}
+                @endif
 
             </div>
         </div>

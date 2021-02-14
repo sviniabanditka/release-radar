@@ -34,7 +34,7 @@ class TelegramController extends Controller
         } else {
             toastr('Webhook setting failed', 'error');
         }
-        return redirect()->route('dashboard.get');
+        return redirect()->back();
     }
 
     public function getUpdates()
