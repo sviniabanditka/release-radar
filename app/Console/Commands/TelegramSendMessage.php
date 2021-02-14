@@ -60,6 +60,7 @@ class TelegramSendMessage extends Command
                 'chat_id' => $user->telegram_chat_id,
                 'text' => $text,
                 'parse_mode' => 'markdown',
+                'disable_notification' => true,
             ]);
         }
         return 0;
