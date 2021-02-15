@@ -4,7 +4,9 @@ namespace App\Console\Commands;
 
 use App\Models\SpotifyArtist;
 use App\Models\SpotifyRelease;
+use App\Models\TelegramNotification;
 use App\Models\User;
+use App\Models\UserSpotifyArtist;
 use Carbon\Carbon;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Console\Command;
@@ -114,7 +116,7 @@ class SyncSpotifyReleases extends Command
                                                 'album_type' => $item->album_type ?? '',
                                                 'album_group' => $item->album_group ?? '',
                                                 'artists' => $item->artists ?? '',
-                                                'cover' => !empty($item->images) ? Arr::first($item->images)['url'] : '',
+                                                'cover' => !empty($item->images) ? Arr::first($item->images)->url : '',
                                                 'spotify_data' => $item,
                                                 'release_date' => $release_date,
                                                 'artist_id' => $artist->id,

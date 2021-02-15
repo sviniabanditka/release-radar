@@ -23,7 +23,6 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $user;
-    protected $log;
 
     /**
      * Create a new job instance.
@@ -33,7 +32,6 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->log = Log::channel('spotify_artists');
     }
 
     /**
@@ -43,7 +41,8 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
      */
     public function handle()
     {
-        $this->log->info('START_FETCH_ARTISTS_LIST_BY_USER', ['user' => $this->user]);
+        $log = Log::channel('spotify_artists');
+        $log->info('START_FETCH_ARTISTS_LIST_BY_USER', ['user' => $this->user]);
         $session = new Session(env('SPOTIFY_CLIENT_ID'), env('SPOTIFY_CLIENT_SECRET'));
         $session->refreshAccessToken($this->user->spotify_refresh_token);
         $api = new SpotifyWebAPI(['auto_refresh' => true], $session);
@@ -87,12 +86,12 @@ class FetchUserSpotifyFollowingList implements ShouldQueue
                 UserSpotifyArtist::query()->where('user_id', $this->user->id)->whereNotIn('artist_id', $ids)->delete();
             }
 
-            $this->log->info('FINISH_FETCH_ARTISTS_LIST_BY_USER', ['user' => $this->user, 'artists_ids' => $ids]);
+            $log->info('FINISH_FETCH_ARTISTS_LIST_BY_USER', ['user' => $this->user, 'artists_ids' => $ids]);
         } catch (SpotifyWebAPIException $e) {
             if ($e->getCode() == 429) { // 429 is Too Many Requests
                 $lastResponse = $api->getRequest()->getLastResponse();
                 $retryAfter = $lastResponse['headers']['retry-after']; // Number of seconds to wait before sending another request
-                $this->log->warning('FETCH_TOO_MANY_REQUESTS', ['retryAfter' => $retryAfter, 'error' => $e]);
+                $log->warning('FETCH_TOO_MANY_REQUESTS', ['retryAfter' => $retryAfter, 'error' => $e]);
                 sleep($retryAfter+20);
                 $this->handle();
             }
