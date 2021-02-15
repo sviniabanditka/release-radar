@@ -17,6 +17,7 @@
         "jwilsson/spotify-web-api-php": "^4.2",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
+        "sentry/sentry-laravel": "^2.3",
         "yoeunes/toastr": "^1.2"
     },
     "require-dev": {
