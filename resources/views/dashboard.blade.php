@@ -60,7 +60,7 @@
                 </div>
                 @if(Sentinel::check() && Sentinel::inRole('admin'))
                     <div class="container-form-btn m-t-17">
-                        <a class="form-btn unlinked" href="{{ route('admin.index.get') }}">Admin</a>
+                        <a class="form-btn unlinked" href="{{ url('/admin') }}">Admin</a>
                     </div>
                 @endif
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TelegramNotification extends Model
 {
+    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     protected $table = 'telegram_notifications';
 
     protected $fillable = [

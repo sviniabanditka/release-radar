@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 
 class User extends EloquentUser
 {
+    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     protected $fillable = [
         'email',
         'password',

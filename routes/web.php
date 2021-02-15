@@ -66,8 +66,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         //ADMIN
         Route::group(['middleware' => 'role:admin'], function () {
-            Route::get('admin', 'AdminController@getIndex')->name('admin.index.get');
-            Route::get('admin\users', 'AdminController@getUsers')->name('admin.users.get');
+            //Route::get('admin', 'AdminController@getIndex')->name('admin.index.get');
+            //Route::get('admin\users', 'AdminController@getUsers')->name('admin.users.get');
             Route::get('bot/telegram/webhook', 'TelegramController@setWebhook')->name('telegram.webhook.get');
         });
     });
