@@ -19,9 +19,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
     Route::get('about', 'HomeController@showAboutPage')->name('about.get');
 
     Route::any('dashboard/bot/telegram/callback', 'TelegramController@getUpdates')->name('telegram.callback.any');
-    Route::post('sentry/callback', function () {
+    Route::any('sentry/callback', function () {
         \Illuminate\Support\Facades\Log::warning('SENTRY_EXCEPTION_CALLBACK', request()->all());
-    })->name('sentry.callback.post');
+        return response()->json(['status' => true]);
+    })->name('sentry.callback.any');
 
     //AUTH
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
