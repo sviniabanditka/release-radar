@@ -39,6 +39,7 @@ return [
             'driver' => 'stack',
             'channels' => ['daily', 'spotify_artists', 'spotify_releases', 'telegram_notifications', 'telegram_bot'],
             'ignore_exceptions' => false,
+            'name' => 'stack'
         ],
 
         'single' => [
