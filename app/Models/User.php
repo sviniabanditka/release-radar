@@ -23,7 +23,8 @@ class User extends EloquentUser
         'last_notified',
         'telegram_notifications_period',
         'telegram_notifications_types',
-        'telegram_notifications_format'
+        'telegram_notifications_format',
+        'last_login'
     ];
 
     protected $casts = [

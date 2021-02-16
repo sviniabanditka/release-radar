@@ -17,7 +17,7 @@ use Exception;
 class TelegramNotificationCrudController extends CrudController
 {
     use Operations\ListOperation;
-    use Operations\CreateOperation;
+    //use Operations\CreateOperation;
     use Operations\UpdateOperation;
     use Operations\DeleteOperation;
     use Operations\ShowOperation;

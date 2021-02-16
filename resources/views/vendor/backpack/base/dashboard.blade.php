@@ -3,10 +3,9 @@
 @php
     $widgets['before_content'][] = [
         'type'        => 'jumbotron',
-        'heading'     => trans('backpack::base.welcome'),
-        'content'     => trans('backpack::base.use_sidebar'),
-        'button_link' => route('auth.logout.get'),
-        'button_text' => trans('backpack::base.logout'),
+        'heading'     => 'Telegram Bot',
+        'button_link' => route('telegram.webhook.get'),
+        'button_text' => 'Set webhook',
     ];
 @endphp
 
