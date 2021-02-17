@@ -92,7 +92,7 @@ class SyncSpotifyReleases extends Command
                                 $options['offset'] = 0;
                                 $albums = $api->getArtistAlbums($artist_id, $options);
                                 if (!empty($albums->items)) {
-                                    $this->log->info('SYNC_RELEASES_COMMAND_USER_RELEASES', ['user_id' => $user->id, 'artist_id' => $artist->id, 'artist_name' => $artist->name, 'releases' => $albums->items]);
+                                    $this->log->info('SYNC_RELEASES_COMMAND_USER_RELEASES', ['user_id' => $user->id, 'artist_id' => $artist->id, 'artist_name' => $artist->name, 'releases' => collect($albums->items)->pluck(['id', 'name', 'release_date'])]);
                                     foreach ($albums->items as $item) {
                                         if (!empty($item->id) && !empty($item->uri) && !empty($item->release_date)) {
                                             switch ($item->release_date_precision) {
@@ -122,6 +122,7 @@ class SyncSpotifyReleases extends Command
                                                 'artist_id' => $artist->id,
                                                 'last_updated' => Carbon::now(),
                                             ]);
+                                            $this->log->info('STORED_RELEASE', ['id' => $item->id, 'name' => $item->name, 'release_date' => $release_date]);
                                             $releases[] = $item->id;
                                         }
                                     }
