@@ -92,7 +92,7 @@ class SyncSpotifyReleases extends Command
                                 $options['offset'] = 0;
                                 $albums = $api->getArtistAlbums($artist_id, $options);
                                 if (!empty($albums->items)) {
-                                    $this->log->info('SYNC_RELEASES_COMMAND_USER_RELEASES', ['user_id' => $user->id, 'artist_id' => $artist->id, 'artist_name' => $artist->name, 'releases' => $albums->items]);
+                                    $this->log->info('SYNC_RELEASES_COMMAND_USER_RELEASES', ['user_id' => $user->id, 'artist_id' => $artist->id, 'artist_name' => $artist->name, 'releases' => collect($albums->items)->pluck('name')->toArray()]);
                                     foreach ($albums->items as $item) {
                                         if (!empty($item->id) && !empty($item->uri) && !empty($item->release_date)) {
                                             switch ($item->release_date_precision) {
@@ -107,21 +107,24 @@ class SyncSpotifyReleases extends Command
                                                     break;
 
                                             }
-                                            SpotifyRelease::query()->updateOrCreate([
-                                                'spotify_id' => $item->id,
-                                                'spotify_uri' => $item->uri,
-                                            ], [
-                                                'name' => $item->name,
-                                                'spotify_url' => $item->external_urls->spotify ?? '',
-                                                'album_type' => $item->album_type ?? '',
-                                                'album_group' => $item->album_group ?? '',
-                                                'artists' => $item->artists ?? '',
-                                                'cover' => !empty($item->images) ? Arr::first($item->images)->url : '',
-                                                'spotify_data' => $item,
-                                                'release_date' => $release_date,
-                                                'artist_id' => $artist->id,
-                                                'last_updated' => Carbon::now(),
-                                            ]);
+                                            if (!SpotifyRelease::query()->where('spotify_id', $item->id)->exists()) {
+                                                $r = SpotifyRelease::query()->updateOrCreate([
+                                                    'spotify_id' => $item->id,
+                                                ], [
+                                                    'name' => $item->name,
+                                                    'spotify_url' => $item->external_urls->spotify ?? '',
+                                                    'spotify_uri' => $item->uri,
+                                                    'album_type' => $item->album_type ?? '',
+                                                    'album_group' => $item->album_group ?? '',
+                                                    'artists' => $item->artists ?? '',
+                                                    'cover' => !empty($item->images) ? Arr::first($item->images)->url : '',
+                                                    'spotify_data' => $item,
+                                                    'release_date' => $release_date,
+                                                    'artist_id' => $artist->id,
+                                                    'last_updated' => Carbon::now(),
+                                                ]);
+                                                $this->log->info('STORED_RELEASE', ['id' => $r->spotify_id ?? null, 'name' => $r->name ?? null, 'release_date' => $r->release_date ?? null]);
+                                            }
                                             $releases[] = $item->id;
                                         }
                                     }
