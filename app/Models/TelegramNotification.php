@@ -14,6 +14,7 @@ class TelegramNotification extends Model
         'user_id',
         'release_id',
         'key',
+        'message_id',
         'created_at'
     ];
 

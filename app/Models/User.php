@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Cartalyst\Sentinel\Users\EloquentUser;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class User extends EloquentUser
 {
@@ -76,7 +77,11 @@ class User extends EloquentUser
     }
 
 
-    public function getReleaseTextByFormat(SpotifyRelease $release)
+    /**
+     * @param SpotifyRelease|Collection $release
+     * @return mixed|string
+     */
+    public function getReleaseTextByFormat($release)
     {
         $format = $this->telegram_notifications_format;
         preg_match_all('@\[\[\[\[.*?\]\]\]\]@', $format, $matches);

@@ -98,7 +98,7 @@ class UserCrudController extends CrudController
                         $text .= 'A ';
                     }
                     if ($entry->telegram_notifications_types['appears_on'] == 1) {
-                        $text .= 'O ';
+                        $text .= 'F ';
                     }
                     if ($entry->telegram_notifications_types['compilation'] == 1) {
                         $text .= 'C ';

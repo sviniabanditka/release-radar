@@ -43,7 +43,7 @@ class StartCommand extends Command
         $this->log->info('TELEGRAM_START_COMMAND', ['chat_id' => $chat->id, 'code' => $code, 'text' => $message->text]);
         if ($code && $code = trim($code)) {
             $user = User::query()->whereNull('telegram_chat_id')->where('telegram_temp_code', $code)->first();
-            $this->log->info('TELEGRAM_START_COMMAND_USER', ['chat_id' => $chat->id, 'user' => $user]);
+            $this->log->info('TELEGRAM_START_COMMAND_USER', ['chat_id' => $chat->id, 'user_id' => $user->id ?? null, 'email' => $user->email ?? null]);
             if ($user) {
                 $user->telegram_chat_id = $chat->id;
                 $user->telegram_temp_code = null;
