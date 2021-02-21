@@ -4,26 +4,33 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LogViewer;
+use Illuminate\Container\EntryNotFoundException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 
 class LogCrudController extends Controller
 {
+    protected $data;
+
     /**
      * Lists all log files.
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $this->data['files'] = LogViewer::getFiles(true, true);
+        $this->data['files'] = LogViewer::getFiles(true);
         $this->data['title'] = trans('backpack::logmanager.log_manager');
-
         return view('logmanager::logs', $this->data);
     }
 
     /**
      * Previews a log file.
      *
-     * @throws \Exception
+     * @param $file_name
+     * @return Application|Factory|View
+     * @throws EntryNotFoundException
      */
     public function preview($file_name)
     {

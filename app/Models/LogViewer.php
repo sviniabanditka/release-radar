@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\File;
 
 /**
  * Class LogViewer.
@@ -77,9 +78,7 @@ class LogViewer
      */
     public static function setFile($file)
     {
-        $file = static::pathToLogFile($file);
-
-        if (app('files')->exists($file)) {
+        if (File::exists(storage_path($file))) {
             static::$file = $file;
         }
     }
@@ -93,20 +92,10 @@ class LogViewer
      */
     public static function pathToLogFile($file)
     {
-        $logsPath = storage_path('logs');
-
-        if (app('files')->exists($file)) { // try the absolute path
-            return $file;
+        if (File::exists(storage_path($file))) { // try the absolute path
+            return storage_path($file);
         }
-
-        $file = $logsPath.'/'.$file;
-
-        // check if requested file is really in the logs directory
-        if (dirname($file) !== $logsPath) {
-            throw new \Exception('No such log file');
-        }
-
-        return $file;
+        throw new \Exception('No such log file');
     }
 
     /**
@@ -114,12 +103,10 @@ class LogViewer
      */
     public static function getFileName()
     {
-        return basename(static::$file);
+        return basename(File::get(storage_path(static::$file)));
     }
 
     /**
-     * @throws \Illuminate\Container\EntryNotFoundException
-     *
      * @return array
      */
     public static function all()
@@ -134,11 +121,10 @@ class LogViewer
             static::$file = $log_file[0];
         }
 
-        if (app('files')->size(static::$file) > static::MAX_FILE_SIZE) {
+        if (File::size(storage_path(static::$file)) > static::MAX_FILE_SIZE) {
             return [];
         }
-
-        $file = app('files')->get(static::$file);
+        $file = File::get(storage_path(static::$file));
 
         $pattern = '/\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\].*/';
 
@@ -183,38 +169,37 @@ class LogViewer
     }
 
     /**
-     * @param bool $basename
-     * @param bool $sort_by_date Most recently modified files first
-     *
      * @return array
      */
-    public static function getFiles($basename = false, $sort_by_date = false)
+    public static function getFiles()
     {
-        $files = glob(storage_path().'/logs/*.log');
-        $files = array_reverse($files);
-        $files = array_filter($files, 'is_file');
-
-        if ($basename && is_array($files)) {
+        $files = self::getTree('logs');
+        sort($files);
+        if (is_array($files)) {
             foreach ($files as $k => $file) {
-                $disk = Storage::disk(config('backpack.base.root_disk_name'));
-                $file_name = basename($file);
-
-                if ($disk->exists('storage/logs/'.$file_name)) {
+                if (File::exists(storage_path($file))) {
                     $files[$k] = [
-                        'file_name'     => $file_name,
-                        'file_size'     => $disk->size('storage/logs/'.$file_name),
-                        'last_modified' => $disk->lastModified('storage/logs/'.$file_name),
+                        'file_name'     => $file,
+                        'file_size'     => File::size(storage_path($file)),
+                        'last_modified' => File::lastModified(storage_path($file)),
                     ];
                 }
             }
+        }
+        return array_values($files);
+    }
 
-            if ($sort_by_date) {
-                usort($files, function ($a, $b) {
-                    return $b['last_modified'] - $a['last_modified'];
-                });
+    private static function getTree($path, $branch= [])
+    {
+        foreach (File::files(storage_path($path)) as $file) {
+            if ($file->getExtension() == 'log') {
+                $branch[] = $path.'/'.$file->getRelativePathname();
             }
         }
-
-        return array_values($files);
+        foreach (File::directories(storage_path($path)) as $directory) {
+            $dir = Arr::last(explode('storage/', $directory));
+            $branch = self::getTree($dir, $branch);
+        }
+        return $branch;
     }
 }
