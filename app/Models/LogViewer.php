@@ -78,7 +78,7 @@ class LogViewer
      */
     public static function setFile($file)
     {
-        if (File::exists(storage_path($file))) {
+        if (File::exists(storage_path('logs/'.$file))) {
             static::$file = $file;
         }
     }
@@ -92,8 +92,8 @@ class LogViewer
      */
     public static function pathToLogFile($file)
     {
-        if (File::exists(storage_path($file))) { // try the absolute path
-            return storage_path($file);
+        if (File::exists(storage_path('logs/'.$file))) { // try the absolute path
+            return storage_path('logs/'.$file);
         }
         throw new \Exception('No such log file');
     }
@@ -103,7 +103,7 @@ class LogViewer
      */
     public static function getFileName()
     {
-        return basename(File::get(storage_path(static::$file)));
+        return basename(File::get(storage_path('logs/'.static::$file)));
     }
 
     /**
@@ -121,10 +121,10 @@ class LogViewer
             static::$file = $log_file[0];
         }
 
-        if (File::size(storage_path(static::$file)) > static::MAX_FILE_SIZE) {
+        if (File::size(storage_path('logs/'.static::$file)) > static::MAX_FILE_SIZE) {
             return [];
         }
-        $file = File::get(storage_path(static::$file));
+        $file = File::get(storage_path('logs/'.static::$file));
 
         $pattern = '/\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\].*/';
 
@@ -173,15 +173,15 @@ class LogViewer
      */
     public static function getFiles()
     {
-        $files = self::getTree('logs');
+        $files = self::getTree();
         sort($files);
         if (is_array($files)) {
             foreach ($files as $k => $file) {
-                if (File::exists(storage_path($file))) {
+                if (File::exists(storage_path('logs/'.$file))) {
                     $files[$k] = [
                         'file_name'     => $file,
-                        'file_size'     => File::size(storage_path($file)),
-                        'last_modified' => File::lastModified(storage_path($file)),
+                        'file_size'     => File::size(storage_path('logs/'.$file)),
+                        'last_modified' => File::lastModified(storage_path('logs/'.$file)),
                     ];
                 }
             }
@@ -189,15 +189,15 @@ class LogViewer
         return array_values($files);
     }
 
-    private static function getTree($path, $branch= [])
+    private static function getTree($path = '', $branch= [])
     {
-        foreach (File::files(storage_path($path)) as $file) {
+        foreach (File::files(storage_path('logs/'.$path)) as $file) {
             if ($file->getExtension() == 'log') {
-                $branch[] = $path.'/'.$file->getRelativePathname();
+                $branch[] = ($path ? ($path.'/') : '').$file->getRelativePathname();
             }
         }
-        foreach (File::directories(storage_path($path)) as $directory) {
-            $dir = Arr::last(explode('storage/', $directory));
+        foreach (File::directories(storage_path('logs/'.$path)) as $directory) {
+            $dir = Arr::last(explode('storage/logs/', $directory));
             $branch = self::getTree($dir, $branch);
         }
         return $branch;
