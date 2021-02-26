@@ -57,7 +57,7 @@ class TelegramController extends Controller
                 if ($callback_data) {
                     //Log::info('TELEGRAM_BOT_CALLBACK_DATA', ['action' => $callback_data, 'update' => $update]);
                     //setup tg actions
-                    Telegram::sendChatAction(['chat_id' => $user10211->telegram_chat_id, 'action' => Actions::TYPING]);
+                    Telegram::sendChatAction(['chat_id' => $user->telegram_chat_id, 'action' => Actions::TYPING]);
 
                     if (str_contains($callback_data, '/get_current_')) {
                         $serial_data = str_replace('/get_current_', '', $callback_data);
